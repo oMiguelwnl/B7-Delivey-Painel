@@ -1,6 +1,7 @@
 "use client";
 
 import { api } from "@/libs/api";
+import { InfoOutlined } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -14,28 +15,41 @@ import Link from "next/link";
 import { useState, FormEvent } from "react";
 
 const Page = () => {
-  const [emailField, setEmailField] = useState("");
   const [passwordField, setPasswordField] = useState("");
-
+  const [passwordField2, setPasswordField2] = useState("");
   const [error, setError] = useState("");
+  const [info, setInfo] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!emailField || !passwordField) {
-      setError("Preencha e-mail e senha");
+    if (!passwordField || !passwordField2) {
+      setError("Preencha a senha");
+      return;
+    }
+
+    if (passwordField !== passwordField2) {
+      setError("As senhas não batem");
       return;
     }
 
     setError("");
+    setInfo("");
     setLoading(true);
 
-    const result = await api.login(emailField, passwordField);
-    setLoading(false);
+    try {
+      const result = await api.redefinePassword(passwordField, "123");
 
-    if (result.error) {
-      setError(result.error);
+      if (result.error) {
+        setError(result.error);
+      } else {
+        setInfo("Senha redefinida, agora você pode fazer o login.");
+        setPasswordField("");
+        setPasswordField2("");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -45,35 +59,38 @@ const Page = () => {
         component="p"
         sx={{ textAlign: "center", mt: 2, color: "#555" }}
       >
-        Digite seus dados para entrar no painel administrativo do
-        estabelecimento e gerenciar produtos/pedidos.
+        Olá **USUARIO**, defina sua nova senha abaixo.
       </Typography>
 
       <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
         <TextField
-          label="Digite seu e-mail"
-          name="email"
-          required
-          fullWidth
-          autoFocus
-          sx={{ mb: 2 }}
-          onChange={(e) => setEmailField(e.target.value)}
-          value={emailField}
-          disabled={loading}
-        />
-        <TextField
-          label="Digite sua senha"
+          label="Digite sua nova senha"
           name="password"
           type="password"
           required
           fullWidth
+          autoFocus
           sx={{ mb: 2 }}
           onChange={(e) => setPasswordField(e.target.value)}
           value={passwordField}
           disabled={loading}
         />
+
+        <TextField
+          label="Digite novamente a sua nova senha"
+          name="password2"
+          type="password"
+          required
+          fullWidth
+          autoFocus
+          sx={{ mb: 2 }}
+          onChange={(e) => setPasswordField2(e.target.value)}
+          value={passwordField2}
+          disabled={loading}
+        />
+
         <Button type="submit" variant="contained" fullWidth disabled={loading}>
-          {loading ? "Carregando..." : "Entrar"}
+          {loading ? "Carregando..." : "Definir nova senha"}
         </Button>
 
         {error && (
@@ -87,12 +104,17 @@ const Page = () => {
             {error}
           </Alert>
         )}
-
-        <Box sx={{ mt: 3 }}>
-          <MuiLink href="/login/forgot" variant="body2" component={Link}>
-            Esqueceu sua senha?
-          </MuiLink>
-        </Box>
+        {info && (
+          <Alert
+            variant="filled"
+            severity="success"
+            sx={{
+              mt: 3,
+            }}
+          >
+            {info}
+          </Alert>
+        )}
       </Box>
     </>
   );

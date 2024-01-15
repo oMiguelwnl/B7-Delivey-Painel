@@ -1,6 +1,7 @@
 "use client";
 
 import { api } from "@/libs/api";
+import { InfoOutlined } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -15,27 +16,30 @@ import { useState, FormEvent } from "react";
 
 const Page = () => {
   const [emailField, setEmailField] = useState("");
-  const [passwordField, setPasswordField] = useState("");
 
   const [error, setError] = useState("");
+  const [info, setInfo] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!emailField || !passwordField) {
-      setError("Preencha e-mail e senha");
+    if (!emailField) {
+      setError("Preencha o seu e-mail ");
       return;
     }
 
     setError("");
+    setInfo("");
     setLoading(true);
 
-    const result = await api.login(emailField, passwordField);
+    const result = await api.forgotPassword(emailField);
     setLoading(false);
 
     if (result.error) {
       setError(result.error);
+    } else {
+      setInfo("Enviamos um e-mail para recuperação da sua senha.");
     }
   };
 
@@ -45,8 +49,7 @@ const Page = () => {
         component="p"
         sx={{ textAlign: "center", mt: 2, color: "#555" }}
       >
-        Digite seus dados para entrar no painel administrativo do
-        estabelecimento e gerenciar produtos/pedidos.
+        Deseja recuperar a sua senha?
       </Typography>
 
       <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
@@ -61,19 +64,9 @@ const Page = () => {
           value={emailField}
           disabled={loading}
         />
-        <TextField
-          label="Digite sua senha"
-          name="password"
-          type="password"
-          required
-          fullWidth
-          sx={{ mb: 2 }}
-          onChange={(e) => setPasswordField(e.target.value)}
-          value={passwordField}
-          disabled={loading}
-        />
+
         <Button type="submit" variant="contained" fullWidth disabled={loading}>
-          {loading ? "Carregando..." : "Entrar"}
+          {loading ? "Carregando..." : "Recuperar a senha"}
         </Button>
 
         {error && (
@@ -87,12 +80,17 @@ const Page = () => {
             {error}
           </Alert>
         )}
-
-        <Box sx={{ mt: 3 }}>
-          <MuiLink href="/login/forgot" variant="body2" component={Link}>
-            Esqueceu sua senha?
-          </MuiLink>
-        </Box>
+        {info && (
+          <Alert
+            variant="filled"
+            severity="success"
+            sx={{
+              mt: 3,
+            }}
+          >
+            {info}
+          </Alert>
+        )}
       </Box>
     </>
   );
