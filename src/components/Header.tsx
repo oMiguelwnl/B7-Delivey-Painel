@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   IconButton,
-  Menu,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -11,6 +10,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { HeaderDrawer } from "./HeaderDrawer";
 import { useState } from "react";
+import Menu from "@mui/icons-material/Menu";
 
 export const Header = () => {
   const router = useRouter();
@@ -32,7 +32,9 @@ export const Header = () => {
           <IconButton
             color="inherit"
             edge="start"
-            sx={{ display: { xs: "block", sm: "none" } }}
+            sx={{
+              display: { xs: "block", sm: "none" },
+            }}
             onClick={handleDrawerToggle}
           >
             <Menu />
@@ -62,7 +64,7 @@ export const Header = () => {
           </Box>
         </Toolbar>
       </AppBar>
-      <Box components="nav">
+      <Box component="nav">
         <HeaderDrawer
           open={drawerOpen}
           onClose={handleDrawerToggle}
