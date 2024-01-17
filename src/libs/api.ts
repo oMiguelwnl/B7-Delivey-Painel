@@ -1,3 +1,20 @@
+import { Order } from "@/types/Order";
+import { OrderStatus } from "@/types/OrderStatus";
+import { Product } from "@/types/Product";
+
+const tmpProduct: Product = {
+  id: 999,
+  image:
+    "https://saopaulosecreto.com/wp-content/uploads/2022/10/Get-Burger-1024x683.jpg",
+  category: {
+    id: 99,
+    name: "Burgers",
+  },
+  name: "Burgão Boladão",
+  price: 35.3,
+  description: "O Melhor burger do mundo",
+};
+
 export const api = {
   login: async (
     email: string,
@@ -27,6 +44,51 @@ export const api = {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({ error: "" });
+      }, 1000);
+    });
+  },
+  getOrders: async (): Promise<Order[]> => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const orders: Order[] = [];
+        const statuses: OrderStatus[] = ["preparing", "sent", "delivered"];
+
+        // TODO: Create Product Array
+        for (let i = 0; i < 6; i++) {
+          orders.push({
+            id: parseInt("12" + i),
+            status: statuses[Math.floor(Math.random() * 3)],
+            orderDate: "2024-03-21 12:20",
+            userid: "1",
+            userName: "João",
+            shippingAddress: {
+              id: 33,
+              cep: "99999999",
+              address: "Rua do céu",
+              number: "1233",
+              neighborhood: "Algum",
+              city: "Rio de Janeiro",
+              state: "RJ",
+              complement: "AAAS2",
+            },
+            shippingPrice: 12,
+            paymentType: "card",
+            changeValue: 0,
+            cupom: "Sorte",
+            cupomDiscount: 2,
+            products: [
+              { qt: 2, product: tmpProduct },
+              {
+                qt: 3,
+                product: { ...tmpProduct, id: 544, name: "Burger Nacional" },
+              },
+            ],
+            subtotal: 99,
+            total: 123,
+          });
+        }
+
+        resolve(orders);
       }, 1000);
     });
   },
