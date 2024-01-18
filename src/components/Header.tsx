@@ -27,7 +27,7 @@ export const Header = () => {
 
   return (
     <>
-      <AppBar component="nav" position="relative">
+      <AppBar component="nav" position="relative" sx={{ displayPrint: "none" }}>
         <Toolbar>
           <IconButton
             color="inherit"
