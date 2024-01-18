@@ -1,6 +1,7 @@
 "use client";
 
 import { OrderItem } from "@/components/OrderItem";
+import { ProductTableItem } from "@/components/ProductTableItem";
 import { ProductTableSkeleton } from "@/components/ProductTableSkeleton";
 import { api } from "@/libs/api";
 import { dateFormat } from "@/libs/dateFormat";
@@ -44,6 +45,9 @@ const Page = () => {
 
   const handleNewProduct = () => {};
 
+  const handleEditProduct = (product: Product) => {};
+
+  const handleDeleteProduct = (product: Product) => {};
   return (
     <>
       <Box sx={{ my: 3 }}>
@@ -70,7 +74,7 @@ const Page = () => {
               <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>
                 Categoria
               </TableCell>
-              <TableCell sx={{ xs: 50, md: 1130 }}>Ações</TableCell>
+              <TableCell sx={{ width: { xs: 50, md: 130 } }}>Ações</TableCell>
             </TableRow>
           </TableHead>
 
@@ -82,6 +86,15 @@ const Page = () => {
                 <ProductTableSkeleton />
               </>
             )}
+            {!loading &&
+              products.map((item) => (
+                <ProductTableItem
+                  key={item.id}
+                  item={item}
+                  onEdit={handleEditProduct}
+                  onDelete={handleDeleteProduct}
+                />
+              ))}
           </TableBody>
         </Table>
       </Box>
